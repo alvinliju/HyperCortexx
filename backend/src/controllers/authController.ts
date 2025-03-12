@@ -98,4 +98,24 @@ const googleCallbackController = async (req:Request, res:Response) => {
 }
 }
 
-export { registerController, loginController, googleCallbackController };
+const verifyToken = async (req, res) => {
+  try{
+    const {token} = req.body;
+    if (!token) {
+      res.status(401).json({ message: 'Invalid token format' });
+      return;
+  }
+
+  // Verify token
+  const decoded = jwt.verify(token, process.env.JWT_SECRET!) as jwt.JwtPayload & {
+      id: string;
+      email: string;
+  };
+
+  return res.status(200).json({ message: 'Token verified successfully',})
+  }catch{
+    res.status(401).json({ message: 'Invalid token' });
+  }
+}
+
+export { registerController, loginController, googleCallbackController, verifyToken };

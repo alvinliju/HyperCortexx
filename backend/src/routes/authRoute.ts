@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import passport from "passport";
 import dotenv from "dotenv";
 dotenv.config();
-import {loginController, registerController, googleCallbackController} from '../controllers/authController'
+import {loginController, registerController, googleCallbackController, verifyToken} from '../controllers/authController'
 const router = express.Router();
 router.use(bodyParser.json());
 
@@ -24,5 +24,7 @@ router.get(
 );
 
 router.get("/google/callback", passport.authenticate("google", {session: false,failureRedirect: "/login",}), googleCallbackController);
+
+router.get("/verify-token", (req, res)=>{verifyToken});
 
 export default router;
