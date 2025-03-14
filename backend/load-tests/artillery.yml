@@ -1,0 +1,90 @@
+config:
+  target: "http://localhost:8000"
+  phases:
+    - duration: 30
+      arrivalRate: 2
+      rampTo: 10
+      name: "Ramp up load"
+    - duration: 60
+      arrivalRate: 10
+      name: "Sustained load"
+  payload:
+    path: "users.csv"
+    fields:
+      - "email"
+      - "password"
+
+scenarios:
+  - name: "Auth flow and Cortex operations"
+    flow:
+      # Register new user
+      - post:
+          url: "/auth/register"
+          json:
+            email: "{{ email }}"
+            password: "{{ password }}"
+          capture:
+            - json: "$.token"
+              as: "token"
+      
+      # Login
+      - post:
+          url: "/auth/login"
+          json:
+            email: "{{ email }}"
+            password: "{{ password }}"
+          capture:
+            - json: "$.token"
+              as: "token"
+
+      # Create cortex item
+      - post:
+          url: "/cortex"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          json:
+            type: "article"
+            title: "Test Article"
+            description: "Load test article"
+            link: "https://example.com"
+            isPublic: false
+          capture:
+            - json: "$.cortex.id"
+              as: "cortexId"
+
+      # Get cortex items
+      - get:
+          url: "/cortex"
+          headers:
+            Authorization: "Bearer {{ token }}"
+
+      # Search cortex
+      - get:
+          url: "/cortex/search?query=test"
+          headers:
+            Authorization: "Bearer {{ token }}"
+
+  - name: "Read-only operations"
+    weight: 3
+    flow:
+      # Login first
+      - post:
+          url: "/auth/login"
+          json:
+            email: "{{ email }}"
+            password: "{{ password }}"
+          capture:
+            - json: "$.token"
+              as: "token"
+
+      # Get cortex items multiple times
+      - loop:
+        - get:
+            url: "/cortex"
+            headers:
+              Authorization: "Bearer {{ token }}"
+        - get:
+            url: "/cortex/search?query=test"
+            headers:
+              Authorization: "Bearer {{ token }}"
+        count: 5

@@ -1,4 +1,4 @@
-import { pgTable, varchar, text, uuid, pgEnum, timestamp, boolean, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, text, uuid, pgEnum, timestamp, boolean, jsonb, index } from 'drizzle-orm/pg-core';
 
 const cortexTypeEnum = pgEnum('cortex_type', [
   'youtube',
@@ -70,3 +70,7 @@ export const shares = pgTable('shares', {
 export type User = typeof users.$inferInsert;
 export type Cortex = typeof cortex.$inferInsert;
 export type Share = typeof shares.$inferInsert;
+
+function vector(arg0: string, arg1: { dimensions: number; }): any {
+  throw new Error('Function not implemented.');
+}

@@ -19,14 +19,14 @@ export const verifyToken = (
     next: NextFunction
 ): void => {
     try {
-        // Get token from header
+        
         const authHeader = req.headers.authorization;
         if (!authHeader) {
             res.status(401).json({ message: 'No token provided' });
             return;
         }
 
-        // Check if it's a Bearer token
+        
         const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
 
         if (!token) {

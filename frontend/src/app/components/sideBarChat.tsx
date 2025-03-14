@@ -1,12 +1,20 @@
-import { Brain } from "lucide-react"
+"use client"
 
-function SideBarChat() {
+import { MessageSquare } from "lucide-react"
+
+export default function Chats() {
+  // This is a placeholder component for the Chats page
+  // You would implement your chat functionality here
+
   return (
-    <div className="flex items-center gap-2 border p-2 rounded-md hover:bg-muted/40 hover:text-primary hover:cursor-pointer">
-        <Brain className="size-4"/>
-        <p className="text-sm font-semibold">Chat</p>
+    <div className="flex flex-col items-center justify-center py-12 text-center">
+      <div className="rounded-full bg-muted p-3 mb-4">
+        <MessageSquare className="h-6 w-6 text-muted-foreground" />
+      </div>
+      <h3 className="text-lg font-medium">Chat History</h3>
+      <p className="text-muted-foreground mt-1 max-w-md">
+        Your conversations will appear here. Start a new chat to begin.
+      </p>
     </div>
   )
 }
-
-export default SideBarChat
